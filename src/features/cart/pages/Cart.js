@@ -8,7 +8,7 @@ import { useCartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 function Cart() {
   const { state: { cart }, dispatch, qtyData, setQtyData } = useCartContext();
-  const { login, setLogin } = useAuthContext();
+  const { login, setLogin, role } = useAuthContext();
   const [cartItems, setCartItems] = useState([]);
 
   const navigate = useNavigate()
@@ -81,44 +81,49 @@ function Cart() {
         <h3>Your cart is getting lonely</h3>
         <p>Fill it up with all things good!</p>
         <button className='btn mb-3' style={{ backgroundColor: "#ffeee5", color: "#ff5211", fontFamily: "bold", fontSize: "25px" }} onClick={() => { navigate("/") }}>Start Shopping</button>
-      </div>) : (<div>
-        <div className='row text-center mt-5'>
-          <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-            Product
-          </div>
-          <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-            Product Name
-          </div>
-          <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
-            Item Price(Each)
-          </div>
+      </div>) : (
 
-          <hr></hr>
-
-        </div>
-
-        {cartItems.map((item, index) => {
-          return <div key={index}>
-            <div className='row text-center mt-5'>
-              <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                <img src={item.image} style={{ width: "50px" }} />
-              </div>
-              <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                {item.ITEM_NAME}
-              </div>
-
-              <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
-                <b> RS:/-</b>  {item.PRICE}
-              </div>
-
-
+        role === 0 ? (< div >
+          <div className='row text-center mt-5'>
+            <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+              Product
             </div>
+            <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+              Product Name
+            </div>
+            <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
+              Item Price(Each)
+            </div>
+
+            <hr></hr>
+
           </div>
-        })}
 
-      </div>)}
+          {cartItems.map((item, index) => {
+            return <div key={index}>
+              <div className='row text-center mt-5'>
+                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+                  <img src={item.image} style={{ width: "50px" }} />
+                </div>
+                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+                  {item.ITEM_NAME}{item.PRODUCT_NAME}
+                </div>
 
-    </div>
+                <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
+                  <b> RS:/-</b>  {item.PRICE}
+                </div>
+
+
+              </div>
+            </div>
+          })}
+
+        </div>) : (<div className="text-center mt-5 text-danger fw-semibold">
+          Seller doesn't have access to the cart details.
+        </div>))
+      }
+
+    </div >
   );
 }
 

@@ -6,9 +6,12 @@ import { Navigate } from 'react-router-dom'
 import apiList from '../../Api/Api_Calls'
 import { useAuthContext } from '../../features/auth/context/AuthContext'
 import axios from 'axios'
-function Header() {
+import { useCartContext } from '../../features/cart/context/CartContext'
 
-  const { login, userData, setLogin, setRole } = useAuthContext()
+function Header() {
+  const { state: { cart } } = useCartContext();
+  const cartLength = cart.length
+  const { login, userData, setLogin, setRole, role } = useAuthContext()
 
   const navigate = useNavigate();
 
@@ -54,13 +57,22 @@ function Header() {
 
 
               </li>
-              <li className='navbar-item dropdown d-flex align-items-center'>
+              {/* <li className='navbar-item dropdown d-flex align-items-center'>
                 <Link
 
                   className={`nav-link`}
                   to={`/category/Electronics`}
                 >
                   Electronics
+                </Link>
+              </li> */}
+              <li className='navbar-item dropdown d-flex align-items-center'>
+                <Link
+
+                  className={`nav-link`}
+                  to={`/category/Backery`}
+                >
+                  Bakery
                 </Link>
               </li>
             </ul>
@@ -89,9 +101,14 @@ function Header() {
 
           <Link to="/Search" className="text-decoration-none text-dark"><i className="bi bi-search"></i></Link>
 
-          <Link to="/Cart" className="text-decoration-none text-dark position-relative d-inline-block"><i className="bi bi-cart"></i>
-
-          </Link>
+          {role === 0 ? (
+            <Link to="/Cart" className="text-decoration-none text-dark position-relative d-inline-block">
+              <i class="bi bi-cart"></i>
+              {cartLength > 0 && (< b className="position-absolute start-50 translate-middle-x badge rounded-pill bg-danger"
+              >{cartLength}</b>
+              )}
+            </Link>) : (<Link to="/Cart" className="text-decoration-none text-dark position-relative d-inline-block"><i class="bi bi-cart"></i></Link>)
+          }
         </div>
       </nav >
 

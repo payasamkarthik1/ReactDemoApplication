@@ -3,7 +3,7 @@ import LoginImage from '../../../assets/images/loginImagePage.jpg'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useAuthContext } from '../context/AuthContext'
-
+import apiList from '../../../Api/Api_Calls'
 function SignIn() {
     const [formData, setFormData] = useState({ email: "", password: "" })
     const [error, setError] = useState(null);
@@ -74,6 +74,58 @@ function SignIn() {
 
             }
         }
+        // try {
+        //     const response = await axios.post(
+        //         apiList.login,
+        //         {
+        //             email: formData.email,
+        //             password: formData.password
+        //         },
+
+        //     );
+
+        //     console.log("logind", response.data)
+
+        //     if (response.status === 200) {
+        //         // if (verifyCondition) {
+        //         //     navigate('/')
+        //         // }
+        //         // else {
+        //         //     navigate(`/OtpData?email=${window.btoa(formData.email)}`)
+        //         // }
+
+
+
+        //         localStorage.setItem("ProfileData", (response.data));
+
+        //         setLogin(true)
+
+        //         if (response.data.role === 'seller') {
+        //             localStorage.setItem("role", "seller");  // Store only role string
+        //             setRole(1);
+        //         } else {
+        //             localStorage.setItem("role", "buyer");
+        //             setRole(0);
+        //         }
+
+        //         navigate('/')
+
+
+        //         // alert("login successfull..")
+        //         // const role = 0
+
+        //         // localStorage.setItem("role", role);
+
+        //         // console.log("roleData.." + role)
+        //         // setRole(role)
+        //         // if (role === 1) {
+        //         //     console.log("sdsdsdd")
+        //         //     navigate("/admin")
+        //         // }
+        //         // else { navigate("/") }
+
+        //     }
+        // }
         catch (err) {
             setError(err.response?.data?.message || "Invalid credentials");
         }

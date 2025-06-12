@@ -10,9 +10,10 @@ import SignIn from '../features/auth/pages/Signin'
 import Home from '../features/home/pages/Home'
 import CategoryGrossary from '../features/product/pages/CategoryGrossary'
 
-import CategoryElectronics from '../features/product/pages/CategoryElectronics'
+import CategoryBakery from '../features/product/pages/CategoryBakery'
 import Search from '../features/product/pages/Search'
 import Cart from '../features/cart/pages/Cart'
+
 
 
 
@@ -29,9 +30,11 @@ function Routing() {
             <Route index element={<Home />} />
             <Route path='/login' element={<SignIn />} />
             <Route path='/category/Grocery' element={<CategoryGrossary />} />
-            <Route path='/category/Electronics' element={<CategoryElectronics />} />
+            <Route path='/category/Backery' element={<CategoryBakery />} />
+            {/* <Route path='/category/Backery' element={<CategoryBackery />} /> */}
             <Route path='/Search' element={<Search />} />
             <Route path='/cart' element={<Cart />} />
+
           </Route>
           <Route path='*' element={<NotFound />} />
 

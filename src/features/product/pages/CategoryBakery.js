@@ -4,12 +4,13 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import apiList from '../../../Api/Api_Calls'
 
-import image1 from '../../../assets/images/Electronics/1.jpeg'
-import image2 from '../../../assets/images/Electronics/2.jpeg'
-import image3 from '../../../assets/images/Electronics/3.jpeg'
-import image4 from '../../../assets/images/Electronics/4.jpeg'
-import image5 from '../../../assets/images/Electronics/5.jpeg'
+import image1 from '../../../assets/images/Backery/chocolate-cake.jpg'
+import image2 from '../../../assets/images/Backery/Croissant.jpg'
+import image3 from '../../../assets/images/Backery/Blueberry Muffin.jpg'
+import image4 from '../../../assets/images/Backery/Garlic Breadsticks.jpg'
+import image5 from '../../../assets/images/Backery/Cheese Danish.jpeg'
 import { useAuthContext } from '../../auth/context/AuthContext';
+import { useCartContext } from '../../cart/context/CartContext';
 const images = {
     1: image1,
     2: image2,
@@ -26,10 +27,13 @@ function Category(props) {
 
     const params = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
+
     console.log("searchParams", params)
     const [products, setProducts] = useState([]);
     const [editProduct, setEditProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState([]);
     params['sort'] = searchParams.get('sort')
+    const { state: { cart }, dispatch } = useCartContext();
     console.log(params);
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -45,15 +49,24 @@ function Category(props) {
             try {
                 const response = await axios.get(apiList.fetch, {
                     headers: {
+
                         'X-IBM-Client-Id': '0f5acdc45a51eb2bfd3639cf7a25e116',
                         'X-IBM-Client-Secret': 'b70cae6ca81e796a8fc4e593f86cc227'
                     }
                 });
 
                 //   console.log("oductData", response.data.categoryDataDetails); // Do something with the response
-                console.log("responsegr", response.data.Electronics)
-                setProducts(response.data.Electronics)
-            } catch (error) {
+                console.log("responsegr", response.data)
+                setProducts(response.data.Bakery)
+            }
+            // try {
+            //     const response = await axios.get(apiList.fetch);
+
+            //     //   console.log("oductData", response.data.categoryDataDetails); // Do something with the response
+            //     console.log("responsegr", response.data.Electronics)
+            //     setProducts(response.data.Electronics)
+            // }
+            catch (error) {
                 console.error("Error fetching product details:", error);
             }
         }
@@ -66,10 +79,11 @@ function Category(props) {
         });
     }
     const handleUpdateProduct = async () => {
+        console.log((`${apiList.updateProduct}/electronics`))
         try {
-            const dataDetails = await axios.post(`${apiList.updateProduct}/electronics `,
+            const dataDetails = await axios.post(`${apiList.updateProduct}/bakery`,
                 {
-                    product_name: editProduct.PRODUCT_NAME,
+                    item_name: editProduct.ITEM_NAME,
                     quantity: editProduct.QTY,
                     price: editProduct.PRICE
                 }
@@ -80,21 +94,42 @@ function Category(props) {
                     }
                 }
             );
-            console.log(dataDetails.data)
+            console.log("data", dataDetails.data)
             alert("Product updated successfully");
 
 
             setProducts((prev) =>
-                prev.map((p) => (p.PRODUCT_ID === editProduct.PRODUCT_ID ? editProduct : p))
+                prev.map((p) => (p.ITEM_ID === editProduct.ITEM_ID ? editProduct : p))
             );
-        } catch (error) {
+        }
+        // try {
+        //     const dataDetails = await axios.post(`${apiList.updateProduct}/electronics `,
+        //         {
+        //             product_name: editProduct.PRODUCT_NAME,
+        //             quantity: editProduct.QTY,
+        //             price: editProduct.PRICE
+        //         }
+
+        //     );
+        //     console.log(dataDetails.data)
+        //     alert("Product updated successfully");
+
+
+        //     setProducts((prev) =>
+        //         prev.map((p) => (p.PRODUCT_ID === editProduct.PRODUCT_ID ? editProduct : p))
+        //     );
+        // }
+        catch (error) {
             console.error("Error updating product:", error);
             alert("Failed to update product");
         }
     };
-    const handleAddCart = () => {
+    const handleAddCart = useCallback((itemToAdd) => {
 
-    }
+
+        console.log("updatedCart", itemToAdd)
+        dispatch({ type: 'ADD_CART', products: itemToAdd })
+    }, [dispatch])
 
     return (
 
@@ -106,15 +141,15 @@ function Category(props) {
                     // const selectedWeight = selectedWeights[product.product_id] || product.weights[0];
                     // const key = `${product.product_id}-${selectedWeight.weight_id}`;
 
-                    return (<div className='col-12 col-sm-12 col-md-3 col-lg-3 mb-3'>
+                    return (<div className='col-12 col-sm-12 col-md-3 col-lg-3 mb-3 text-center'>
 
 
-                        <img src={images[product.PRODUCT_ID]} style={{ width: 200, height: 200, objectFit: 'contain' }} />
+                        <img src={images[product.ITEM_ID]} style={{ width: 200, height: 200, objectFit: 'contain' }} />
 
-                        <h5 className='text-center'>{product.PRODUCT_NAME}</h5>
+                        <h5 className='text-center'>{product.ITEM_NAME}</h5>
                         <div className='text-center mb-2'>
                             <span>From </span>
-                            <span>Rs. {product.PRICE}</span>
+                            <span>$ {product.PRICE}</span>
                         </div>
                         {role === 1 && <div>
                             <button
@@ -127,7 +162,7 @@ function Category(props) {
                             <button
                                 className='btn w-100 text-light' style={{ backgroundColor: "rgb(197, 47, 36)" }}
                                 data-bs-toggle="modal"
-                                data-bs-target="#exampleModal" onClick={() => handleAddCart({ ...product })}>
+                                data-bs-target="#exampleModal" onClick={() => handleAddCart({ ...product, image: images[product.ITEM_ID] }, setSelectedProduct({ ...product, image: images[product.ITEM_ID] }))}>
                                 Add To Cart
                             </button>
                         </div>}
@@ -181,25 +216,19 @@ function Category(props) {
                     <div class="modal-content">
                         <div class="modal-header">
                             <b class="modal-title w-100" id="exampleModalLabel">
+
                                 <div className='row text-center'>
-                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                        Just added
-                                    </div>
-                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+                                    <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
                                         Item
                                     </div>
-                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                        Qty
+                                    <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
+                                        Item Name
                                     </div>
+
                                     <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                        Item Price(Size)
+                                        Item Price(Each)
                                     </div>
-                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                        Total Price
-                                    </div>
-                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                        Sub Total
-                                    </div>
+
                                 </div>
                             </b>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -207,27 +236,22 @@ function Category(props) {
                         <div class="modal-body">
 
 
-                            <div className='row text-center'>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    image
-                                </div>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    <p>product_name</p>
-                                </div>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    Qty
-                                </div>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    price
-                                </div>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    total
-                                </div>
-                                <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
-                                    Sub Total
-                                </div>
-                            </div>
+                            {selectedProduct ? (
+                                <div className='row text-center'>
+                                    {console.log("selecte,,", setProducts)}
+                                    <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
+                                        <img src={selectedProduct.image} style={{ width: "70px" }} />
+                                    </div>
+                                    <div className='col-3 col-sm-3 col-md-3 col-lg-3'>
+                                        <p>{selectedProduct.ITEM_NAME}</p>
+                                    </div>
 
+                                    <div className='col-2 col-sm-2 col-md-2 col-lg-2'>
+                                        <b>$</b>  {selectedProduct.PRICE}
+                                    </div>
+
+                                </div>) : (<div className="text-center">No product selected</div>
+                            )}
 
 
                         </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import '../../../components/css/home.css'
 import AcImage from "../../../assets/images/Air-Conditioner-Buying-Guide.jpg"
-import electric1 from "../../../assets/images/electronic-image.jpg"
+import bakeryList from "../../../assets/images/bakery.jpeg"
 import groceryList from "../../../assets/images/grocery-list.jpg"
 import { Link } from 'react-router-dom'
 function Home() {
@@ -33,7 +33,7 @@ function Home() {
                                     <a href="/cg/our-brands/?shopall=y&amp;bcid=hphrgc01&amp;idt=20250527&amp;icn=Seasonal_Summer" target="_self" data-gtm-id="" data-gtm-position="" data-gtm-name="" data-gtm-creative="" class="anchor-wrap plp-espot-gtm-tag plp-espot-gtm-view  d-flex flex-wrap text-decoration-none mt-2 _4H6fQslkWrZUtx4R06Z--" >
                                         <div class="_1ZhovVYzMSoIiWB1XSbB3W col-12 px-0">
                                             <div class="sc-aXZVg iXGUiA ipiOJvFjUHtcs7c9JuuYQ">
-                                                <Link to="/category/Electronics">   <img src={electric1} alt="Our Brand Event" class="d-block w-100" style={{ height: "175px" }} /></Link>
+                                                <Link to="/category/Backery">   <img src={bakeryList} alt="Our Brand Event" class="d-block w-100" style={{ height: "175px" }} /></Link>
 
                                             </div>
                                         </div>
